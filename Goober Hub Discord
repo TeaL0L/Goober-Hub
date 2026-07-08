@@ -1,0 +1,55 @@
+local InviteCode = "CCVQEuZjAn"
+
+local HttpService = game:GetService("HttpService")
+local StarterGui = game:GetService("StarterGui")
+
+local request =
+    syn and syn.request or
+    http_request or
+    request or
+    fluxus and fluxus.request
+
+local function Notify(title, text, duration)
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = title,
+            Text = text,
+            Duration = duration or 5
+        })
+    end)
+end
+
+if not request then
+    Notify(
+        "Discord Invite Failed",
+        "Your executor doesn't support HTTP requests needed to open Discord invites.",
+        8
+    )
+    return
+end
+
+local Success = pcall(function()
+    request({
+        Url = "http://127.0.0.1:6463/rpc?v=1",
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json",
+            ["Origin"] = "https://discord.com"
+        },
+        Body = HttpService:JSONEncode({
+            cmd = "INVITE_BROWSER",
+            nonce = HttpService:GenerateGUID(false),
+            args = {
+                code = InviteCode
+            }
+        })
+    })
+end)
+
+if not Success then
+    Notify(
+        "Discord Invite Failed",
+        "Your executor blocked or doesn't support Discord RPC requests.",
+        8
+    )
+end
