@@ -1,0 +1,99 @@
+-- =============================================
+--              GOOBER HUB LOADER
+-- =============================================
+
+local gameId = game.PlaceId
+
+-- =============================================
+--                 SCRIPT DATABASE
+-- =============================================
+
+local scripts = {
+    
+    [987362926] = function()   -- NONE
+        print("GOOBER HUB CERTIFIED")
+    end,
+
+}
+
+-- =============================================
+--                 EXECUTION
+-- =============================================
+
+if scripts[gameId] then
+    scripts[gameId]()
+else
+    -- Show modern notification GUI
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "GooberHub_Notification"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = playerGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 380, 0, 140)
+    frame.Position = UDim2.new(0.5, -190, 0.5, -70)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BorderSizePixel = 0
+    frame.BackgroundTransparency = 0.05
+    frame.Parent = screenGui
+
+    -- Corner rounding
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, 12)
+    uiCorner.Parent = frame
+
+    -- Title
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.BackgroundTransparency = 1
+    title.Text = "GOOBER HUB"
+    title.TextColor3 = Color3.fromRGB(255, 100, 100)
+    title.TextScaled = true
+    title.Font = Enum.Font.GothamBold
+    title.Parent = frame
+
+    -- Message
+    local message = Instance.new("TextLabel")
+    message.Size = UDim2.new(1, -40, 0, 50)
+    message.Position = UDim2.new(0, 20, 0, 45)
+    message.BackgroundTransparency = 1
+    message.Text = "This game is currently not supported."
+    message.TextColor3 = Color3.fromRGB(220, 220, 220)
+    message.TextScaled = true
+    message.Font = Enum.Font.Gotham
+    message.TextWrapped = true
+    message.Parent = frame
+
+    -- Close Button
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 100, 0, 35)
+    closeBtn.Position = UDim2.new(0.5, -50, 1, -45)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+    closeBtn.Text = "Close"
+    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeBtn.TextScaled = true
+    closeBtn.Font = Enum.Font.GothamSemibold
+    closeBtn.Parent = frame
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 8)
+    btnCorner.Parent = closeBtn
+
+    -- Auto close after 3 seconds
+    local autoClose = true
+    spawn(function()
+        wait(3)
+        if autoClose and screenGui.Parent then
+            screenGui:Destroy()
+        end
+    end)
+
+    -- Close button functionality
+    closeBtn.MouseButton1Click:Connect(function()
+        autoClose = false
+        screenGui:Destroy()
+    end)
+end
