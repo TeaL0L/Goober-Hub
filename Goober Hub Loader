@@ -10,8 +10,8 @@ local gameId = game.PlaceId
 
 local scripts = {
     
-    [987362926] = function()   -- NONE
-        print("GOOBER HUB CERTIFIED")
+    [107432537461632] = function()   -- Stealing Gnomes
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/TeaL0L/Goober-Hub/refs/heads/main/Stealing%20Gnomes"))()
     end,
 
 }
