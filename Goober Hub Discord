@@ -1,4 +1,4 @@
-local InviteCode = "hh547DUTG"
+local InviteCode = "CCVQEuZjAn"
 
 local HttpService = game:GetService("HttpService")
 local StarterGui = game:GetService("StarterGui")
