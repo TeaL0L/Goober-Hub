@@ -13,6 +13,12 @@ if game:GetService("CoreGui"):FindFirstChild("GooberNotification") then
 end
 
 -- =============================================
+--              GOOBER HUB DISCORD
+-- =============================================
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TeaL0L/Goober-Hub/refs/heads/main/Goober%20Hub%20Discord"))()
+
+-- =============================================
 --                 SCRIPT DATABASE
 -- =============================================
 
