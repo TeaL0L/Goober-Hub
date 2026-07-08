@@ -2,7 +2,15 @@
 --              GOOBER HUB LOADER
 -- =============================================
 
+repeat task.wait() until game.PlaceId and game.Players.LocalPlayer
+
 local gameId = game.PlaceId
+local TweenService = game:GetService("TweenService")
+
+-- Prevent multiple notifications
+if game:GetService("CoreGui"):FindFirstChild("GooberNotification") then
+    return  -- Already showing notification, do nothing
+end
 
 -- =============================================
 --                 SCRIPT DATABASE
@@ -23,45 +31,49 @@ local scripts = {
 if scripts[gameId] then
     scripts[gameId]()
 else
-    -- Show modern notification GUI
-    local player = game.Players.LocalPlayer
-    local playerGui = player:WaitForChild("PlayerGui")
+    local CoreGui = game:GetService("CoreGui")
 
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "GooberHub_Notification"
+    screenGui.Name = "GooberNotification"
     screenGui.ResetOnSpawn = false
-    screenGui.Parent = playerGui
+    screenGui.DisplayOrder = 999999999
+    screenGui.Parent = CoreGui
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 380, 0, 140)
-    frame.Position = UDim2.new(0.5, -190, 0.5, -70)
-    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    frame.Size = UDim2.new(0, 60, 0, 60)
+    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     frame.BorderSizePixel = 0
-    frame.BackgroundTransparency = 0.05
+    frame.BackgroundTransparency = 1
     frame.Parent = screenGui
 
-    -- Corner rounding
     local uiCorner = Instance.new("UICorner")
-    uiCorner.CornerRadius = UDim.new(0, 12)
+    uiCorner.CornerRadius = UDim.new(0, 16)
     uiCorner.Parent = frame
+
+    local uiStroke = Instance.new("UIStroke")
+    uiStroke.Color = Color3.fromRGB(255, 65, 65)
+    uiStroke.Thickness = 1.5
+    uiStroke.Parent = frame
 
     -- Title
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
+    title.Size = UDim2.new(1, 0, 0, 50)
     title.BackgroundTransparency = 1
     title.Text = "GOOBER HUB"
-    title.TextColor3 = Color3.fromRGB(255, 100, 100)
+    title.TextColor3 = Color3.fromRGB(255, 90, 90)
     title.TextScaled = true
     title.Font = Enum.Font.GothamBold
     title.Parent = frame
 
     -- Message
     local message = Instance.new("TextLabel")
-    message.Size = UDim2.new(1, -40, 0, 50)
-    message.Position = UDim2.new(0, 20, 0, 45)
+    message.Size = UDim2.new(1, -40, 0, 55)
+    message.Position = UDim2.new(0, 20, 0, 50)
     message.BackgroundTransparency = 1
     message.Text = "This game is currently not supported."
-    message.TextColor3 = Color3.fromRGB(220, 220, 220)
+    message.TextColor3 = Color3.fromRGB(210, 210, 210)
     message.TextScaled = true
     message.Font = Enum.Font.Gotham
     message.TextWrapped = true
@@ -69,9 +81,9 @@ else
 
     -- Close Button
     local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 100, 0, 35)
-    closeBtn.Position = UDim2.new(0.5, -50, 1, -45)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+    closeBtn.Size = UDim2.new(0, 120, 0, 40)
+    closeBtn.Position = UDim2.new(0.5, -60, 1, -52)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
     closeBtn.Text = "Close"
     closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeBtn.TextScaled = true
@@ -79,21 +91,62 @@ else
     closeBtn.Parent = frame
 
     local btnCorner = Instance.new("UICorner")
-    btnCorner.CornerRadius = UDim.new(0, 8)
+    btnCorner.CornerRadius = UDim.new(0, 10)
     btnCorner.Parent = closeBtn
 
-    -- Auto close after 3 seconds
-    local autoClose = true
-    spawn(function()
-        wait(3)
-        if autoClose and screenGui.Parent then
+    -- === ANIMATIONS ===
+    local openTweenInfo = TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+    local closeTweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+
+    -- Pop-in animation
+    local popIn = TweenService:Create(frame, openTweenInfo, {
+        Size = UDim2.new(0, 400, 0, 160),
+        BackgroundTransparency = 0.03
+    })
+    popIn:Play()
+
+    -- Hover effect
+    closeBtn.MouseEnter:Connect(function()
+        TweenService:Create(closeBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {
+            Size = UDim2.new(0, 132, 0, 44)
+        }):Play()
+    end)
+
+    closeBtn.MouseLeave:Connect(function()
+        TweenService:Create(closeBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {
+            Size = UDim2.new(0, 120, 0, 40)
+        }):Play()
+    end)
+
+    -- Close function
+    local function closeGui()
+        local frameTween = TweenService:Create(frame, closeTweenInfo, {
+            Size = UDim2.new(0, 50, 0, 50),
+            BackgroundTransparency = 1
+        })
+
+        local btnTween = TweenService:Create(closeBtn, closeTweenInfo, {
+            Size = UDim2.new(0, 60, 0, 20),
+            BackgroundTransparency = 1,
+            TextTransparency = 1
+        })
+
+        frameTween:Play()
+        btnTween:Play()
+
+        frameTween.Completed:Connect(function()
             screenGui:Destroy()
+        end)
+    end
+
+    -- Auto close (5 seconds)
+    task.spawn(function()
+        task.wait(5)
+        if frame.Parent then
+            closeGui()
         end
     end)
 
-    -- Close button functionality
-    closeBtn.MouseButton1Click:Connect(function()
-        autoClose = false
-        screenGui:Destroy()
-    end)
+    -- Button close
+    closeBtn.MouseButton1Click:Connect(closeGui)
 end
