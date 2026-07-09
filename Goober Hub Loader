@@ -28,6 +28,10 @@ local scripts = {
         loadstring(game:HttpGet("https://raw.githubusercontent.com/TeaL0L/Goober-Hub/refs/heads/main/Stealing%20Gnomes"))()
     end,
 
+    [15057217688] = function()   -- Raise a Rick
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/TeaL0L/Goober-Hub/refs/heads/main/Raise%20a%20Rick"))()
+    end,
+
 }
 
 -- =============================================
