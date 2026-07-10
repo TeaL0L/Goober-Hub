@@ -32,6 +32,10 @@ local scripts = {
         loadstring(game:HttpGet("https://raw.githubusercontent.com/TeaL0L/Goober-Hub/refs/heads/main/Supported/Raise%20a%20Rick.lua"))()
     end,
 
+    [122157103924912] = function()   -- Throw Stuff at People
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/TeaL0L/Goober-Hub/refs/heads/main/Supported/Throw%20Stuff%20at%20People.lua"))()
+    end,
+    
 }
 
 -- =============================================
